@@ -11,7 +11,7 @@ mystock = {}
 
 stocks = ''
 
-url = "http://hq.sinajs.cn/list="
+url = "https://hq.sinajs.cn/list="
 
 
 def readData():
@@ -36,18 +36,16 @@ def highOrLow(a, b):
 
 
 def printStock():
-    ctx = requests.get(url + stocks)
+    ctx = requests.get(url + stocks, headers={"Referer": "https://finance.sina.com.cn"})
     ctx.encoding = "gb2312"
     data = ctx.text
     # print type(data)
     line = data.split('\n')
 
-    #print(bcolors.WHITE+"代码      名称         昨收        今开     最高        最低       现价     涨幅      浮动数额       盈亏比例     成本金额"+bcolors.ENDC)
     print(bcolors.WHITE+"CODE      NM         Close      Open        Hi         Low       Now        %         Lost           Lost%       $$" + bcolors.ENDC)
     for stock in line:
         stockInfo = stock.split(',')
         if stockInfo[0]:
-            # var hq_str_s_sh000001="上证指数
             temp = stockInfo[0].split('_')[2].replace('"', '').split('=')
             code = temp[0]
             name = temp[1]
@@ -120,5 +118,9 @@ if __name__ == '__main__':
     while True:
         os.system(clear_screen_cmd)
         print(bcolors.YELLOW+getTime()+bcolors.ENDC)
-        printStock()
+        try:
+            printStock()
+        except:
+            pass
+
         time.sleep(5)
